@@ -1,8 +1,3 @@
-/*
-    name : harshal patel
-    date : jan / 17 / 2025
-    file : create.js 
-*/
 // tell us what page we're on
 console.log('we are on the add page');
 
