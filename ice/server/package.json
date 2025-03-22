@@ -27,6 +27,7 @@
     "escape-html": "^1.0.3",
     "etag": "^1.8.1",
     "express": "^4.21.2",
+    "express-validator": "^7.2.1",
     "finalhandler": "^1.3.1",
     "forwarded": "^0.2.0",
     "fresh": "^0.5.2",
@@ -65,6 +66,7 @@
     "safer-buffer": "^2.1.2",
     "send": "^0.19.0",
     "serve-static": "^1.16.2",
+    "server": "file:",
     "setprototypeof": "^1.2.0",
     "side-channel": "^1.1.0",
     "side-channel-list": "^1.0.0",
@@ -79,9 +81,12 @@
     "utils-merge": "^1.0.1",
     "vary": "^1.1.2",
     "webidl-conversions": "^7.0.0",
-    "whatwg-url": "^14.1.1"
+    "whatwg-url": "^14.1.1",
+    "winston": "^3.17.0"
   },
   "scripts": {
+    "start": "node index.js",
+    "d": "node --inspect index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
