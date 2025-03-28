@@ -1,5 +1,3 @@
-// Follow the README.md to set up the rest of this file.
-
 document.addEventListener("DOMContentLoaded", () => {
     const genreSelect = document.getElementById("genre-selector");
     const ratingSelect = document.getElementById("rating-selector");
@@ -10,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genreSelect.addEventListener("change", updateMovies);
     ratingSelect.addEventListener("change", updateMovies);
 
-    updateMovies(); // Load movies on page load
+    updateMovies();
 
     async function updateMovies() {
         const genre = genreSelect.value;
@@ -18,8 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const movies = await fetchMovies(genre, rating);
+            movies.sort((a, b) => a.rating - b.rating);
 
-            // Show/hide based on movie count
             if (movies.length === 0) {
                 table.classList.add("d-none");
                 alertBox.classList.remove("d-none");
@@ -36,10 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-/*
- *  fetchMovies
- *  Uses URLSearchParams, URL, Headers, and Request.
- */
 async function fetchMovies(genre = null, rating = null) {
     const url = new URL("/api/movies", window.location.origin);
     const params = new URLSearchParams();
@@ -67,39 +61,45 @@ async function fetchMovies(genre = null, rating = null) {
     return await response.json();
 }
 
-/*
- *  insertMoviesIntoTable
- *  Populates <tbody> with movie rows.
- */
 function insertMoviesIntoTable(tbody, movies) {
-    tbody.innerHTML = ""; // Clear previous results
+    tbody.innerHTML = "";
 
     movies.forEach(movie => {
         const row = tbody.insertRow();
 
-        // Insert cells for movie attributes
         const titleCell = row.insertCell();
         const genreCell = row.insertCell();
-        const yearCell = row.insertCell();
+        const releaseDateCell = row.insertCell();
         const directorCell = row.insertCell();
         const ratingCell = row.insertCell();
 
         titleCell.textContent = movie.title;
         genreCell.textContent = movie.genre;
 
-        // Convert release_date (Unix timestamp) to readable date
-        yearCell.textContent = new Date(movie.release_date * 1000).toLocaleDateString();
+        const releaseDate = new Date(movie.release_date * 1000);
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true,
+        };
+        const formattedDateTime = releaseDate.toLocaleString('en-US', options);
+        const [datePart, timePart] = formattedDateTime.split(', ');
+        const [month, day, year] = datePart.split('/');
+        const isoDate = `${year}-${month}-${day}`;
+        releaseDateCell.textContent = `${isoDate} , ${timePart}`;
 
         directorCell.textContent = movie.director;
         ratingCell.textContent = movie.rating;
 
-        // Apply row color based on rating
         const rating = parseFloat(movie.rating);
 
-          // Apply row styling based on movie rating
-          if (movie.rating <= 2) row.classList.add("table-danger");
-          else if (movie.rating <= 5) row.classList.add("table-warning");
-          else if (movie.rating <= 8) row.classList.add("table-primary");
-          else row.classList.add("table-success");
+        if (movie.rating <= 2) row.classList.add("table-danger");
+        else if (movie.rating > 2 && movie.rating <= 5) row.classList.add("table-warning");
+        else if (movie.rating > 5 && movie.rating <= 8) row.classList.add("table-info");
+        else if (movie.rating > 8) row.classList.add("table-success");
     });
 }
